@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+  <head>
+    <meta charset=utf-8>
+  {% block htmlhead %}
+    <title>{% block title %}Home{% endblock %} | Hanif's Thoughts and Writings</title>
+    <link href="/feed.atom" rel="alternate" title="Hanif's Thoughts and Writings" type="application/atom+xml">
+    <link href="/feed.xml" rel="alternate" title="Hanif's Thoughts and Writings" type="application/rss+xml">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="preload" href="/static/avatar-tiny.jpg" as="image" type="image/jpeg">
+    {%- for link in links %}
+    <link rel="{{ link.rel }}" href="{{ link.href }}"{%
+      if link.media %} media="{{ link.media }}"{% endif %} type="{{ link.type }}">
+    {%- endfor %}
+    <link rel="apple-touch-icon" sizes="300x300" href="/static/avatar-small.jpg">
+    <link rel="icon" type="image/png" sizes="300x300" href="/static/avatar-small.jpg">
+    {% block social_image %}
+    <meta name="twitter:image" content="https://kimihanif.github.io/static/avatar-small.jpg">
+    <meta property="og:image" content="https://kimihanif.github.io/static/avatar-small.jpg">
+    {% endblock %}
+    <link rel="stylesheet" href="/static/fonts.css" type="text/css">
+    <link rel="stylesheet" href="/static/style-2025.css" type="text/css">
+    <link rel="stylesheet" href="/static/_pygments.css" type="text/css">
+    <meta name="title" content="{{ self.title() }}">
+    <meta property="og:title" content="{{ self.title() }}">
+    <meta property="og:site_name" content="Hanif's Thoughts and Writings">
+    <meta name="twitter:site" content="@kimihanif">
+    <meta name="twitter:url" content="https://kimihanif.github.io{{ slug }}">
+    <meta property="og:url" content="https://kimihanif.github.io{{ slug }}">
+    <link rel="canonical" href="https://kimihanif.github.io{{ slug }}">
+    <meta name="twitter:title" content="{{ self.title() }}">
+    {% block twitter_card %}
+    <meta name="twitter:card" content="summary">
+    {% endblock %}
+    <meta name="twitter:creator" content="@kimihanif">
+    <meta name="twitter:domain" content="https://kimihanif.github.io/">
+  {% endblock %}
+    <script type="speculationrules">
+      {
+        "prefetch": [
+          {
+            "where": { "href_matches": "/*" },
+            "eagerness": "moderate"
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body hx-boost="true" hx-ext="head-support" hx-select="div.body" hx-target="div.body" hx-swap="outerHTML">
+    <div class="header-image">
+      <canvas id="header-canvas"></canvas>
+    </div>
+    <script>
+      let $THEME = null;
+
+      function selectTheme(theme) {
+        const node = document.documentElement;
+        if (theme === "system") {
+          localStorage.removeItem("theme");
+        } else {
+          localStorage.setItem("theme", theme);
+        }
+        node.setAttribute("data-theme", theme);
+        $THEME = theme;
+      }
+
+      selectTheme(localStorage.getItem("theme") || "system");
+      document.documentElement.setAttribute("data-initial-load", "true");
+
+      if (history.scrollRestoration) {
+        history.scrollRestoration = 'manual';
+      }
+    </script>
+    <script src="/static/htmx-bundle.min.js"></script>
+    <script src="/static/app.js"></script>
+    <div class=container>
+      <div class=header>
+        <a href="/about/">Hanif</a>'s Thoughts and Writings
+      </div>
+      <div class=navigation>
+        <ul>
+          <li><a href="/">blog</a>
+          <li><a href="/archive/">archive</a>
+          <li><a href="/about/">about</a>
+        </ul>
+      </div>
+      <div class=body hx-history-elt>
+        {% block body %}{% endblock %}
+      </div>
+      <div class=footer>
+        <p>&copy; Copyright {{ format_date(format='YYYY') }} by Hanif.
+        <p>
+          Content licensed under the Creative Commons
+          attribution-noncommercial-sharealike License.
+        <p class="theme-selector" hidden>
+          Color scheme:
+          <label><input type="radio" name="theme" value="system"> <span>auto</span></label>,
+          <label><input type="radio" name="theme" value="light"> <span>light</span></label>,
+          <label><input type="radio" name="theme" value="dark"> <span>dark</span></label>.
+          <script>
+            document.querySelector('.theme-selector').removeAttribute('hidden');
+            document.querySelectorAll('input[name="theme"]').forEach(input => {
+              input.checked = input.value === $THEME;
+              input.addEventListener('change', () => {
+                selectTheme(input.value);
+              });
+            });
+          </script>
+        </p>
+      </div>
+    </div>
+    <div class="footer-image">
+      <canvas id="footer-canvas"></canvas>
+    </div>
+    <script>
+      window.setTimeout(() => {
+        document.documentElement.removeAttribute("data-initial-load");
+      }, 0);
+    </script>
+  </body>
+</html>

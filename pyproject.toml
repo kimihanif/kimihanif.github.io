@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "generator"
+version = "1.0.0"
+description = "A simple static blog software based on Markdown and Jinja2"
+authors = [
+    {name = "Hanif"},
+]
+license = {text = "MIT"}
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.8"
+dependencies = [
+    "Jinja2>=3.0",
+    "Pygments",
+    "marko",
+    "watchdog",
+    "pyyaml",
+    "Pillow",
+    "smartypants>=2.0.2",
+]
+
+[project.scripts]
+build-blog = "generator.commands:main_build"
+serve-blog = "generator.commands:main_serve"
+
+[tool.hatch.build.targets.wheel]
+packages = ["generator"]

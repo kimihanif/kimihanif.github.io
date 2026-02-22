@@ -60,10 +60,16 @@ https://learn.microsoft.com/en-us/answers/questions/5723293/embedding-endpoint-s
 
 ![azure-embedding-endpoint-outage.png](azure-embedding-endpoint-outage.png)
 
+## Where They Still Work
+
 But I am not discounting the open-source models. In fact, I would very much like for them to succeed since they provide great value for money. 
 
 And they do have a place in our stack. Right now, we use open-source models in our preprocessing pipeline where the work is straightforward — one-shot requests where we pass in a class and get back business context and technical explanations. No looping, no tool calls, no multi-step reasoning. For that kind of work, they're brilliant and the cost savings are real.
 The trouble starts when you ask them to do more. The moment you put a cheaper model inside an agentic loop — where it needs to reason, pick tools, handle errors, and keep going until the job is done — the cracks start to show. And those cracks cost you more than the money you thought you were saving.
 
+## The Takeaway
+
 So here's my take after months of working with both: if you have access to a better model, use it for your agents, even if the sticker price is higher. The total cost — in tokens, engineering time, and reliability — will almost certainly be lower. Save the open-source models for your batch jobs, your preprocessing, and your one-shot tasks where they genuinely earn their keep.
 The mystique of cheaper models is real. The benchmarks are impressive, the pricing is tempting, and the progress is genuinely exciting. But mystique fades when you're three weeks into building guardrails for a model that was supposed to save you money.
+
+For any non-trivial agentic workflow, stick to the GPT-5 series or Claude Opus. By the time you account for extra tokens, retries, missing prompt caching, and the engineering hours spent on guardrails, they end up costing about the same as the cheaper models — and you actually ship features instead of workarounds.

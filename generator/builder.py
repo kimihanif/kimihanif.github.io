@@ -440,6 +440,9 @@ class Builder:
         # Generate markdown file alongside HTML for all posts and pages
         self.build_markdown_file(post)
 
+        # Copy sibling assets (images, etc.) to output directory
+        self.copy_post_assets(post)
+
         # Build redirect page if this is a blog post with leading zeros needed
         slug_with_leading_zeros = pad_date_slug(post.slug)
         if slug_with_leading_zeros != post.slug:
@@ -448,6 +451,17 @@ class Builder:
         # Notify that this individual page was rebuilt (triggers immediate reload)
         if self.on_page_rebuilt:
             self.on_page_rebuilt()
+
+    def copy_post_assets(self, post):
+        """Copy non-markdown sibling files (images, etc.) to the post's output directory."""
+        source_dir = (self.project_folder / post.source_path).parent
+        output_dir = Path(post.output_path).parent
+
+        for asset in source_dir.iterdir():
+            if asset.is_file() and asset.suffix != ".md":
+                dst = output_dir / asset.name
+                if not dst.exists() or asset.stat().st_mtime > dst.stat().st_mtime:
+                    shutil.copy2(asset, dst)
 
     def build_markdown_file(self, post):
         """Build markdown file alongside HTML."""

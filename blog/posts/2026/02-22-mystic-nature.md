@@ -13,6 +13,8 @@ The benchmarks looked impressive, the pricing was a fraction of what GPT-5 cost.
 The thing is, cheaper open-source models aren't actually cheap — not when you're running them in agentic workflows. 
 The hidden costs pile up fast: more tool errors, custom guardrails you never planned for, no prompt caching, and infrastructure that lets you down.
 
+I'll try to break this down in the points below.
+
 ![ai-benchmark-intelligence-index.png](ai-benchmark-intelligence-index.png)
 
 ## Back & Forth and Tool Errors

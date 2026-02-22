@@ -15,6 +15,8 @@ The hidden costs pile up fast: more tool errors, custom guardrails you never pla
 
 I'll try to break this down in the points below.
 
+*Artificial Analysis Intelligence Index — open-source models are closing the gap, but benchmarks don't tell the full story.*
+
 ![ai-benchmark-intelligence-index.png](ai-benchmark-intelligence-index.png)
 
 ## Back & Forth and Tool Errors
@@ -22,6 +24,8 @@ I'll try to break this down in the points below.
 In an agentic workflow, your model doesn't just answer a question and move on. It thinks, picks a tool, calls it, reads the result, and decides what to do next. Sometimes it loops through this cycle several times before it gets to an answer. Every one of those loops costs tokens.
 The problem with cheaper models is they tend to loop longer to get the answer and their tool call error rate is higher. And when a tool call fails, the model doesn't just move on — it retries, sometimes with the exact same parameters, sometimes with something slightly different that also doesn't work. The token usage climbs and so does the cost.
 Here's a real example. We tested Kimi 2.5, one of the top-rated open-source models.
+
+*Kimi 2.5 turning a relative path into an absolute one — a simple mistake that triggers a validation error and a retry loop.*
 
 ![tool-call-path-validation-error.png](tool-call-path-validation-error.png)
 
@@ -39,6 +43,8 @@ In an agentic loop, this matters a lot. Your system prompt, tool definitions, an
 Open-source models on Azure AI don't get this. For whatever reason, prompt caching simply isn't available for them. So every iteration is billed at full price.
 
 There's a performance benefit too, not just cost. When a cache hit happens, the response comes back noticeably faster because the provider doesn't need to reprocess those prefix tokens.
+*Our Azure billing breakdown — notice the cached token lines for GPT-5 versus full-price billing for DeepSeek and Kimi.*
+
 ![azure-model-token-costs.png](azure-model-token-costs.png)
 
 ## Reliability
@@ -49,6 +55,8 @@ But the real wake-up call was when our embedding model went down. We were using 
 Two days of our agents not being able to search or retrieve anything meaningful. We weren't the only ones hit either — other users reported the same issue on Microsoft's forums.
 
 https://learn.microsoft.com/en-us/answers/questions/5723293/embedding-endpoint-suddenly-gives-400-bad-request
+
+*The Microsoft Q&A thread — we weren't the only ones hit by the Cohere Embed 4 outage on Azure AI.*
 
 ![azure-embedding-endpoint-outage.png](azure-embedding-endpoint-outage.png)
 

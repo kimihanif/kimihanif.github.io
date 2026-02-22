@@ -1,5 +1,5 @@
 ---
-summary: "The Mystique of Cheaper Models"
+summary: "Why cheaper models are not always cheap"
 tags: [ai]
 ---
 
@@ -25,7 +25,7 @@ In an agentic workflow, your model doesn't just answer a question and move on. I
 The problem with cheaper models is they tend to loop longer to get the answer and their tool call error rate is higher. And when a tool call fails, the model doesn't just move on — it retries, sometimes with the exact same parameters, sometimes with something slightly different that also doesn't work. The token usage climbs and so does the cost.
 Here's a real example. We tested Kimi 2.5, one of the top-rated open-source models.
 
-*Kimi 2.5 turning a relative path into an absolute one — a simple mistake that triggers a validation error and a retry loop.*
+*Kimi 2.5 turning a relative path into an absolute one - a simple mistake that triggers a validation error and a retry loop.*
 
 ![tool-call-path-validation-error.png](tool-call-path-validation-error.png)
 
@@ -33,7 +33,7 @@ Here's a real example. We tested Kimi 2.5, one of the top-rated open-source mode
 
 Because cheaper models make more mistakes with tool calls, you end up building a whole layer of error handling that you never budgeted for. This isn't just a bit of extra code — it's an entire harness around the model to stop it from tripping over itself.
 For instance, we had to explicitly craft error responses that told the model to try a different approach instead of retrying the same thing. Sounds simple enough, but without this, the model would happily call the same tool with the exact same parameters over and over, burning through tokens and getting nowhere. We also had to build tool call caching to catch these repeated calls and short-circuit them before they hit the API again.
-DeepSeek V3.2 gave us a different headache altogether. It would collect all the information it needed to answer the question, and then just... keep going. It wouldn't stop and give you the answer. It kept calling tools, gathering more context it didn't need, running up the token count for no reason. We ended up writing custom logic to strip away its tool access after a certain number of iterations, essentially forcing it to stop researching and start answering.
+DeepSeek V3.2 gave us a different headache altogether. It would collect all the information it needed to answer the question, and then just... keep going. It wouldn't stop and give you the answer. It kept calling tools, gathering more context it didn't need, running up the tokens. We ended up writing custom logic to strip away its tool access after a certain number of iterations, essentially forcing it to stop researching and start answering.
 None of this work was on our original roadmap. Every hour spent building guardrails for a cheaper model was an hour not spent building actual features. 
 
 ## No Prompt Caching
@@ -69,7 +69,7 @@ The trouble starts when you ask them to do more. The moment you put a cheaper mo
 
 ## The Takeaway
 
-So here's my take after months of working with both: if you have access to a better model, use it for your agents, even if the sticker price is higher. The total cost — in tokens, engineering time, and reliability — will almost certainly be lower. Save the open-source models for your batch jobs, your preprocessing, and your one-shot tasks where they genuinely earn their keep.
+After working with both: if you have access to a better model, use it for your agents, even if the price is higher. The total cost in tokens, engineering time, and reliability, will almost certainly be lower. Save the open-source models for your batch jobs, preprocessing, and one-shot tasks where they genuinely earn their keep.
 The mystique of cheaper models is real. The benchmarks are impressive, the pricing is tempting, and the progress is genuinely exciting. But mystique fades when you're three weeks into building guardrails for a model that was supposed to save you money.
 
 For any non-trivial agentic workflow, stick to the GPT-5 series or Claude Opus. By the time you account for extra tokens, retries, missing prompt caching, and the engineering hours spent on guardrails, they end up costing about the same as the cheaper models — and you actually ship features instead of workarounds.

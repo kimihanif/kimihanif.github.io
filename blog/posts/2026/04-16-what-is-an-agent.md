@@ -1,5 +1,5 @@
 ---
-summary: "What is an AI Agent?"
+summary: "An explainer of AI agents as a while loop around an LLM and a set of tools, with a worked example."
 tags: [ai]
 ---
 
@@ -44,7 +44,7 @@ with tool outputs and include file paths.
 
 Tools are capabilities that the AI orchestration layer offers to the LLM to accomplish a task. It's like providing the LLM with hands, legs, eyes, and ears.
 
-Each tool has a schema that describes what type of input it accepts, what output it produces, and what capability it provides — think of it like an API contract.
+Each tool has a schema that describes what type of input it accepts and what capability it provides — think of it like an API contract.
 
 Almost all basic AI orchestration layers offer tools like:
 
@@ -94,7 +94,7 @@ For the LLM to answer this question, it first needs to understand your project s
 sequenceDiagram
     actor Human
     box Agent
-      participant Orch as AI Orchestration<br/>(Claude Code / Tabnine)
+      participant Orch as AI Orchestration<br/>(Claude Code / Tabnine CLI)
       participant Tools as Tools<br/>(part of orchestration)
       participant LLM as LLM<br/>(GPT, Claude Sonnet, ...)
     end
@@ -105,7 +105,7 @@ sequenceDiagram
     rect rgb(245, 245, 245)
       Note over Orch,LLM: Loop 1 — Understand project layout
       LLM->>Orch: call bash(ls)
-      Orch->>Tools: execute ls
+      Orch->>Tools: execute bash
       Tools-->>Orch: list of files
       Orch-->>LLM: file listing
     end

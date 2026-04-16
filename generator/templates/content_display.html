@@ -154,9 +154,17 @@
       (function() {
         if (!window.mermaid) return;
         mermaid.initialize({ startOnLoad: true });
-        document.body.addEventListener('htmx:afterSettle', function() {
-          mermaid.run({ querySelector: '.mermaid:not([data-processed="true"])' });
-        });
+        // Render diagrams in the current page (handles arrival via htmx boost,
+        // where DOMContentLoaded has already fired on the original page).
+        mermaid.run({ querySelector: '.mermaid:not([data-processed="true"])' });
+        // Attach the boost handler exactly once across navigations so listeners
+        // don't accumulate as the user moves between mermaid posts.
+        if (!window.__mermaidBoostHooked) {
+          window.__mermaidBoostHooked = true;
+          document.body.addEventListener('htmx:afterSettle', function() {
+            mermaid.run({ querySelector: '.mermaid:not([data-processed="true"])' });
+          });
+        }
       })();
     </script>
   {% endif %}

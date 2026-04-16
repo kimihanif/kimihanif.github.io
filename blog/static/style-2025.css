@@ -174,6 +174,14 @@ pre             { line-height: 1.5; background: var(--code-block-background-colo
                   margin: -8px -30px -8px -30px; border-radius: 2px; box-shadow: 0 0 3px var(--pre-shadow); }
 code, tt        { background: var(--code-background-color); }
 
+/* mermaid diagrams */
+pre.mermaid     { background: var(--code-block-background-color);
+                  box-shadow: 0 0 3px var(--pre-shadow);
+                  padding: 16px 30px; margin: 1em -30px;
+                  text-align: center; overflow-x: auto;
+                  line-height: normal; font-family: inherit;
+                  border-radius: 2px; }
+
 /* tables */
 table           { border: 1px solid var(--table-border-color); border-collapse: collapse;
                   background: var(--table-background-color); }

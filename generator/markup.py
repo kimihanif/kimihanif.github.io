@@ -35,6 +35,9 @@ class PygmentsRenderer(HTMLRenderer):
         code = element.children[0].children if element.children else ""
         if isinstance(code, str):
             language = getattr(element, "lang", None) or ""
+            if language == "mermaid":
+                escaped = self.escape_html(code)
+                return Markup(f'<pre class="mermaid">{escaped}</pre>')
             return highlight_code(code, language)
         return super().render_fenced_code(element)
 
@@ -67,6 +70,7 @@ def render_markdown(content):
         "title": html_title.striptags() if html_title else None,
         "html_title": html_title,
         "fragment": html_content,
+        "has_mermaid": '<pre class="mermaid">' in str(html_content),
     }
 
 

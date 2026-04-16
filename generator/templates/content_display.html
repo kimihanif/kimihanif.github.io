@@ -145,4 +145,27 @@
       });
     });
   </script>
+  {% if content.has_mermaid %}
+    <script
+      src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"
+      integrity="sha384-rbtjAdnIQE/aQJGEgXrVUlMibdfTSa4PQju4HDhN3sR2PmaKFzhEafuePsl9H/9I"
+      crossorigin="anonymous"></script>
+    <script>
+      (function() {
+        if (!window.mermaid) return;
+        mermaid.initialize({ startOnLoad: true });
+        // Render diagrams in the current page (handles arrival via htmx boost,
+        // where DOMContentLoaded has already fired on the original page).
+        mermaid.run({ querySelector: '.mermaid:not([data-processed="true"])' });
+        // Attach the boost handler exactly once across navigations so listeners
+        // don't accumulate as the user moves between mermaid posts.
+        if (!window.__mermaidBoostHooked) {
+          window.__mermaidBoostHooked = true;
+          document.body.addEventListener('htmx:afterSettle', function() {
+            mermaid.run({ querySelector: '.mermaid:not([data-processed="true"])' });
+          });
+        }
+      })();
+    </script>
+  {% endif %}
 {% endblock %}

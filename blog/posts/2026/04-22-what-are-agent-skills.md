@@ -17,7 +17,9 @@ Skills are how you hand the agent that missing knowledge — once, in a format i
 
 A skill is a Markdown file with a specific shape: a small header describing what's inside, a body with the actual knowledge, and — optionally — linked reference documents for detail that's too heavy to inline. Drop it in a directory the agent knows to look in, and it becomes part of the agent's knowledge on demand.
 
-Two problems disappear at once. First, the knowledge gap: private APIs, internal domain concepts, anything outside training data now has a place to live where the agent can find it. Second, the rediscovery tax: the agent stops grepping its way to the same answer every session, which saves tokens, keeps the context window clean, and means you stop pasting the same docs over and over.
+The first problem it solves is the **training data gap**. An LLM only knows what was in its training data plus whatever it can reach with its tools. Your company's internal services, your team's domain language, the quirks of your production environment — none of it is in the model. Skills give that private knowledge somewhere to live where the agent can find it on its own.
+
+The second is the **rediscovery tax**. Even when the answer *is* reachable, the agent pays to find it. Every session, it runs the same greps, opens the same files, rebuilds the same context just to land on the answer it landed on last time. That costs time, burns tokens, and fills the context window with snippets that aren't the answer — which makes it harder to reason about the ones that are. Skills let you write the answer down once so the agent jumps straight to it, instead of rediscovering it every turn.
 
 ## Anatomy of a Skill
 

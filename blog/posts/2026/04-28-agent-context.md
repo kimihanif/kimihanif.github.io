@@ -5,7 +5,7 @@ tags: [ai]
 
 # Understanding Agent Context
 
-You've probably noticed agents get fuzzier the longer a session runs — and that bills add up faster than you'd expect. Both come down to the same thing: how the agent's context fills up over time. Once you understand that, you can structure your sessions to get sharper answers for less money.
+You've probably noticed agents get fuzzier the longer a session runs — losing track of details, repeating steps, drifting from the original task. That comes down to how the agent's context fills up over time. Once you understand that, you can structure your sessions to get sharper answers.
 
 ## What is Agent Context?
 

@@ -64,7 +64,7 @@ The exact size of that recent slice (30k here) is arbitrary and varies by harnes
 
 1. **Start a new session for unrelated tasks.** Don't continue a session just because it's already open — every leftover token costs you quality and money.
 
-2. **Split your tasks** so the agent can finish each one within ~70% of the context window. Past that, you're racing compaction.
+2. **Split your tasks** so the agent can finish each one within ~70% of the context window. Past that, quality starts slipping and you're racing compaction.
 
 3. **Compact early, before quality drops.** If you sense the agent getting fuzzier, trigger compaction yourself rather than waiting for the auto-trigger.
 

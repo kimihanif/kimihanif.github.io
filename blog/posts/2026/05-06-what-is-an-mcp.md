@@ -61,6 +61,10 @@ gh pr view 123 --json title --jq .title
 
 One line in, one string out. Compare that to `pull_request_read` returning the entire PR object.
 
+Why does this beat MCP for cases like this? Three reasons. The `Bash` tool is already in context — adding a CLI like `gh` costs **zero schema tokens**, where the GitHub MCP brings 41 tool definitions every turn. The agent picks the **exact slice** it needs, instead of accepting whatever output shape the MCP author chose. And CLIs **compose** — `gh pr view ... | jq ...` chains in one shot, where MCP tools are atomic.
+
+It's not always the right call — the next section covers when MCP still earns its weight.
+
 In this case, no skill is needed for the CLI itself — `gh` is well-known and already lives in the LLM's training data ([more on skills here](https://kimihanif.github.io/2026/4/22/what-are-agent-skills/)).
 
 A skill becomes useful only when the CLI is obscure — and even that gap is closing. Modern agents will happily run `<cli> --help` against an unfamiliar tool, read the output, and figure it out on the fly. The skill is a shortcut for repeated use, not a hard requirement.

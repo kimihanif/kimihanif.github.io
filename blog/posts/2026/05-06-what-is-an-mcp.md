@@ -19,7 +19,7 @@ So you add the MCP, you get the functionality, everyone's happy. What's the catc
 
 ![GitHub MCP server tools list — 41 tools across PRs, issues, branches, files, search](github-mcp-tools-list-grid.png)
 
-*The `pull_request_read` tool's input schema as shown by the inspector — fixed fields, a tool-annotation row (read-only, idempotent, etc.), and a fixed output shape decided by the server.*
+*The `pull_request_read` tool's input schema as shown by the inspector.*
 
 ![pull_request_read tool detail — fixed input schema with method, owner, page, perPage, pullNumber, repo](github-mcp-pull-request-read.png)
 

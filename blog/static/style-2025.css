@@ -172,6 +172,7 @@ pre, code, tt   { font-family: 'Ubuntu Mono', 'Consolas', 'Deja Vu Sans Mono',
 pre             { line-height: 1.5; background: var(--code-block-background-color);
                   color: var(--code-block-text-color); padding: 8px 30px; width: 100%; overflow-x: auto;
                   margin: -8px -30px -8px -30px; border-radius: 2px; box-shadow: 0 0 3px var(--pre-shadow); }
+li pre          { margin-top: 10px; margin-bottom: 10px; }
 code, tt        { background: var(--code-background-color); }
 
 /* mermaid diagrams */

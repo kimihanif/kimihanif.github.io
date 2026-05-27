@@ -30,8 +30,14 @@ ALTER TABLE event ENABLE ROW LEVEL SECURITY;
 ALTER TABLE event FORCE  ROW LEVEL SECURITY;
 
 CREATE POLICY event_access_policy ON event
-    USING      (tenant_id = current_setting('app.current_tenant', true))
-    WITH CHECK (tenant_id = current_setting('app.current_tenant', true));
+USING (
+    current_setting('app.current_tenant', true) IS NULL
+    OR tenant_id = current_setting('app.current_tenant', true)
+)
+WITH CHECK (
+    current_setting('app.current_tenant', true) IS NULL
+    OR tenant_id = current_setting('app.current_tenant', true)
+);
 ```
 
 `USING` filters reads; `WITH CHECK` validates writes. The application can now issue `SELECT * FROM event` with no `WHERE` clause at all. The database filters before the rows ever leave the storage engine. Forgetting the filter is no longer possible, because there is no filter to forget.
@@ -52,9 +58,9 @@ The application sets the GUC at the start of each transaction, and the policy re
 SET LOCAL app.current_tenant = 'A';
 ```
 
-The `true` second argument to `current_setting` in the policy is the `missing_ok` flag. Without it, reading an unset GUC would raise an error. That matters because not every transaction has a tenant. Background jobs, admin endpoints, and unauthenticated public pages all open transactions too, and the policy needs to behave sensibly when the GUC is absent.
+Two details in the policy are worth pausing on. The `true` second argument to `current_setting` is the `missing_ok` flag. Without it, reading an unset GUC would raise an error, which matters because not every transaction has a tenant. Background jobs, admin endpoints, and unauthenticated public pages all open transactions too.
 
-The pattern most production systems land on is "default-open at the gate, default-deny inside." The policy returns true (allow) when the GUC is unset, and a single piece of application middleware is responsible for setting the GUC on every request that *should* be tenant-restricted. The check moves from "is this query filtered correctly?" to "is this request marked correctly?", which is a much smaller surface to get right.
+The `IS NULL` branch in the policy is what handles those transactions. When the GUC is unset, `current_setting` returns NULL, the first half of the `OR` is true, and every row passes the policy. This is "default-open at the gate, default-deny inside" — a single piece of application middleware is responsible for setting the GUC on every request that *should* be tenant-restricted, and the policy filters everything once it is set. The check moves from "is this query filtered correctly?" to "is this request marked correctly?", which is a much smaller surface to get right.
 
 ## The Request Lifecycle
 

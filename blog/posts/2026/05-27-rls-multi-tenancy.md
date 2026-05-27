@@ -30,15 +30,15 @@ ALTER TABLE event ENABLE ROW LEVEL SECURITY;
 ALTER TABLE event FORCE  ROW LEVEL SECURITY;
 
 CREATE POLICY event_access_policy ON event
-    USING      (tenant_id = current_tenant())
-    WITH CHECK (tenant_id = current_tenant());
+    USING      (tenant_id = current_setting('app.current_tenant', true))
+    WITH CHECK (tenant_id = current_setting('app.current_tenant', true));
 ```
 
 `USING` filters reads; `WITH CHECK` validates writes. The application can now issue `SELECT * FROM event` with no `WHERE` clause at all. The database filters before the rows ever leave the storage engine. Forgetting the filter is no longer possible, because there is no filter to forget.
 
 `FORCE ROW LEVEL SECURITY` is the line that makes this real. Without it, the table owner (typically the same role your application connects as) would silently bypass the policy. With it, the policy applies even to the owner.
 
-That leaves one question: where does `current_tenant()` get its answer from? RLS is enforced inside a SQL function, and SQL functions have no idea which request triggered the query. The policy needs to know the *current* tenant, and "current" is per-request, not per-database.
+That leaves one question: where does `current_setting('app.current_tenant')` get its answer from? The policy is just an SQL expression, evaluated against every row. It needs to know the *current* tenant, and "current" is per-request, not per-database.
 
 ## The Bridge: GUCs, Set Per Transaction
 
@@ -46,21 +46,13 @@ PostgreSQL exposes a mechanism called **GUCs**, Grand Unified Configuration vari
 
 Crucially, GUCs can be scoped to the *current transaction* with `SET LOCAL`. The value lives for one transaction only; when the transaction commits or rolls back, the GUC clears. That makes them the right primitive for "this work is for tenant A." The value lasts exactly as long as the work it is authorising.
 
-The policy reads the GUC; the application sets the GUC at the start of each transaction:
+The application sets the GUC at the start of each transaction, and the policy reads it back through `current_setting`:
 
 ```sql
 SET LOCAL app.current_tenant = 'A';
 ```
 
-The policy function reads it back:
-
-```postgresql
-CREATE OR REPLACE FUNCTION current_tenant() RETURNS text AS $$
-    SELECT current_setting('app.current_tenant', true)
-$$ LANGUAGE sql;
-```
-
-The `true` second argument is the `missing_ok` flag. Without it, reading an unset GUC would raise an error. That matters because not every transaction has a tenant. Background jobs, admin endpoints, and unauthenticated public pages all open transactions too, and the policy needs to behave sensibly when the GUC is absent.
+The `true` second argument to `current_setting` in the policy is the `missing_ok` flag. Without it, reading an unset GUC would raise an error. That matters because not every transaction has a tenant. Background jobs, admin endpoints, and unauthenticated public pages all open transactions too, and the policy needs to behave sensibly when the GUC is absent.
 
 The pattern most production systems land on is "default-open at the gate, default-deny inside." The policy returns true (allow) when the GUC is unset, and a single piece of application middleware is responsible for setting the GUC on every request that *should* be tenant-restricted. The check moves from "is this query filtered correctly?" to "is this request marked correctly?", which is a much smaller surface to get right.
 
@@ -120,4 +112,4 @@ RLS is not free, and it is not the right choice for every system.
 
 Filtering in the application is the cheapest multi-tenancy option until the day someone ships a query without the filter. RLS moves the filter into the database, where the planner enforces it before any application code is reached. The trade-off is a tighter coupling to Postgres and a hard dependency on transactions. In exchange, "did I remember the `WHERE` clause?" stops being a code review question.
 
-If you are starting a multi-tenant system on Postgres today, RLS is worth at least the afternoon it takes to prototype against your real schema. The pattern is small: one policy per tenant-scoped table, one `SET LOCAL` per request, and one function deciding when to enforce.
+If you are starting a multi-tenant system on Postgres today, RLS is worth at least the afternoon it takes to prototype against your real schema. The pattern is small: one policy per tenant-scoped table, one `SET LOCAL` per request, and one piece of middleware deciding when to set it.

@@ -23,7 +23,7 @@ Companies that aren't at the bleeding edge have one real advantage here: they ca
 
 <img class="align-center" src="sea-horizon-wave.jpg" alt="A lone man standing on the shore, watching a huge wave rise on the hazy horizon" width="680">
 
-So how do we prevent it? Expecting everyone to be on their best behavior all day, every day, is not realistic. And the answer isn't rules on paper or software delivery freezes either — those are band-aids at best, and they come off within days. We have to invest in our teams and systems — to ease the process and act as a safety net.
+So how do we prevent it? Expecting everyone to be on their best behavior all day, every day, is not realistic. And the answer isn't rules on paper or software delivery freezes either — those are band-aids at best, and they come off within days. Nor is it more code review: manual review doesn't scale to AI-sized PRs, and AI reviewing AI just adds another slot machine to the loop. We have to invest in our teams and systems — to ease the process and act as a safety net.
 
 How exactly? My full answer deserves its own post, and I don't want to rob you of your own thinking towards a solution. But here's the direction I'm looking in.
 
@@ -36,3 +36,5 @@ Turning that analogy back to software, three questions come to mind:
 - How close are our environments to our customers' environment?
 - How long are our feedback and verification loops?
 - How easy are these systems to actually use?
+
+The answer, I suspect, lies in mixing age-old engineering practices with a modern twist — one that meets the scale and maintenance demands of this new age.
